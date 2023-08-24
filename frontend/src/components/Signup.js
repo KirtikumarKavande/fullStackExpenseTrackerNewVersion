@@ -1,20 +1,26 @@
 import React, { useRef } from "react";
 
 const Signup = () => {
-   const nameRef=useRef()
-   const emailRef=useRef()
-   const passwordRef=useRef()
-const handleSingupForm=(e)=>{
-    e.preventDefault()
-    const name=nameRef.current.value
-    const email=emailRef.current.value
-    const password=passwordRef.current.value
+  const nameRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const handleSingupForm = (e) => {
+    e.preventDefault();
+    const name = nameRef.current.value;
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
 
-    const obj={
-        name,email,password
-    }
-    console.log(obj)
-}
+    const obj = {
+      name,
+      email,
+      password,
+    };
+    fetch("http://localhost:4000/signup", {
+      method: "POST",
+      body: JSON.stringify(obj),
+      headers: { "content-type": "application/json" },
+    });
+  };
 
   return (
     <div className="mt-16">
@@ -25,7 +31,10 @@ const handleSingupForm=(e)=>{
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Create an account
               </h1>
-              <form className="space-y-4 md:space-y-6"onSubmit={handleSingupForm}>
+              <form
+                className="space-y-4 md:space-y-6"
+                onSubmit={handleSingupForm}
+              >
                 <div>
                   <label
                     for="email"
@@ -72,10 +81,7 @@ const handleSingupForm=(e)=>{
                   />
                 </div>
 
-                <button
-                 
-                  className="w-full text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                >
+                <button className="w-full text-white bg-blue-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">
                   Create an account
                 </button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
