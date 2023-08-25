@@ -1,9 +1,13 @@
 const signupUserModel = require("../model/userSignup");
+const bcrypt = require("bcrypt");
 exports.signUpUser = async (req, res, next) => {
-  console.log(req.body);
+  const { name, email, password } = req.body;
 
   try {
-    signupUserModel.create(req.body);
+    bcrypt.hash(password, 10, async (err, hash) => {
+      await signupUserModel.create({ name, email, password: hash });
+      res.status(200).json({ message: "user created successfully" });
+    });
   } catch (err) {
     console.log(err);
   }
@@ -18,13 +22,19 @@ exports.signInUser = async (req, res, next) => {
     });
 
     if (data.length > 0) {
-      if (data[0].password === req.body.password) {
-        res.status(201).json({ success: true, message: "sign in success" });
-      } else {
-        res
-          .status(400)
-          .json({ success: false, message: "password is invalid" });
-      }
+      bcrypt.compare(req.body.password, data[0].password, (err, result) => {
+        if (err) {
+          throw new Error("something went wrong");
+        }
+
+        if (result === true) {
+          res.status(201).json({ success: true, message: "sign in success" });
+        } else {
+          res
+            .status(400)
+            .json({ success: false, message: "password is invalid" });
+        }
+      });
     } else {
       return res
         .status(400)
