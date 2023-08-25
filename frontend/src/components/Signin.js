@@ -1,21 +1,39 @@
 import React, { useRef } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Signin = () => {
+  const emailRef = useRef();
+  const passwordRef = useRef();
 
-   const emailRef= useRef()
-   const passwordRef= useRef()
-   const handleSigninform=(e)=>{
+  const handleSigninform = (e) => {
     e.preventDefault();
-    const email=emailRef.current.value
-    const password=passwordRef.current.value
-    const obj={
-        email,
-        password
-    }
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const obj = {
+      email,
+      password,
+    };
 
-    console.log(obj)
-   }
+    fetch("http://localhost:4000/signin", {
+      method: "POST",
+      body: JSON.stringify(obj),
+      headers: { "content-type": "application/json" },
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        if (data.success) {
+          toast.success(data.message);
+        } else {
+          toast.error(data.message);
+        }
+      })
+      .catch((err) => {
+        toast.error(err);
+      });
+  };
 
   return (
     <div className="mt-12">
@@ -37,7 +55,10 @@ const Signin = () => {
               <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
                 Sign in to your account
               </h1>
-              <form className="space-y-4 md:space-y-6" onSubmit={handleSigninform}>
+              <form
+                className="space-y-4 md:space-y-6"
+                onSubmit={handleSigninform}
+              >
                 <div>
                   <label
                     for="email"
@@ -53,7 +74,6 @@ const Signin = () => {
                     placeholder="name@company.com"
                     required=""
                     ref={emailRef}
-
                   />
                 </div>
                 <div>
