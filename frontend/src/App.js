@@ -6,6 +6,7 @@ import Signin from "./components/Signin";
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AddExpense from "./components/AddExpense";
 
 export default function App() {
   const router = createBrowserRouter([
@@ -24,6 +25,9 @@ export default function App() {
         {
           path: "/signin",
           element: <Signin />,
+        },{
+          path: "/addexpense",
+          element: <AddExpense />,
         },
       ],
     },

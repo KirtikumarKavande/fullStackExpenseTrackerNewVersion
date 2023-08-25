@@ -1,8 +1,9 @@
 import React, { useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Signin = () => {
+  const navigate=useNavigate()
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -26,6 +27,8 @@ const Signin = () => {
       .then((data) => {
         if (data.success) {
           toast.success(data.message);
+          navigate('/addexpense')
+          
         } else {
           toast.error(data.message);
         }
