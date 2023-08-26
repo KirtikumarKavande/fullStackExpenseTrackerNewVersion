@@ -27,6 +27,7 @@ const Signin = () => {
       .then((data) => {
         if (data.success) {
           toast.success(data.message);
+          localStorage.setItem('token',data.token);
           navigate('/addexpense')
           
         } else {

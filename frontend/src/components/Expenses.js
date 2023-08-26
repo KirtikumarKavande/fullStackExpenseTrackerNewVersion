@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-const Expense = ({expenseData,setExpenseData}) => {
-
+const Expense = ({ expenseData, setExpenseData }) => {
   useEffect(() => {
-    fetch("http://localhost:4000/show-expense")
+    const token = localStorage.getItem("token");
+    console.log(token);
+
+    fetch("http://localhost:4000/show-expense", {
+      headers: { Authorization: token },
+    })
       .then((data) => {
         return data.json();
       })
@@ -12,12 +16,16 @@ const Expense = ({expenseData,setExpenseData}) => {
       });
   }, []);
   const handleDeleteExpeses = (id) => {
+    const token = localStorage.getItem("token");
+
     const updatedData = expenseData.filter((item) => {
       return item.id !== id;
     });
     setExpenseData(updatedData);
 
-    fetch(`http://localhost:4000/delete-expense/${id}`);
+    fetch(`http://localhost:4000/delete-expense/${id}`, {
+      headers: { "Authorization": token },
+    });
   };
 
   return (

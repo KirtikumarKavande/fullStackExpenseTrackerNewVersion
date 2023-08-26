@@ -1,5 +1,10 @@
 const signupUserModel = require("../model/userSignup");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+function generateAccessToken(id,name) {
+  return jwt.sign({ signupuserId: id,name:name }, "98kirtikmarseqnjde132323123232kjcdbcf");
+}
 exports.signUpUser = async (req, res, next) => {
   const { name, email, password } = req.body;
 
@@ -11,7 +16,6 @@ exports.signUpUser = async (req, res, next) => {
   } catch (err) {
     console.log(err);
   }
-  res.send("signUp successfully");
 };
 
 exports.signInUser = async (req, res, next) => {
@@ -28,7 +32,7 @@ exports.signInUser = async (req, res, next) => {
         }
 
         if (result === true) {
-          res.status(201).json({ success: true, message: "sign in success" });
+          res.status(201).json({ success: true, message: "sign in success",token:generateAccessToken(data[0].id,data[0].name) });
         } else {
           res
             .status(400)
