@@ -3,6 +3,24 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
+  const token = localStorage.getItem("token");
+  function parseJwt(token) {
+    var base64Url = token.split(".")[1];
+    var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    var jsonPayload = decodeURIComponent(
+      window
+        .atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+
+    return JSON.parse(jsonPayload);
+  }
+  const ispremiumuser = parseJwt(token);
+
   const activatePremiumButton = async () => {
     const token = localStorage.getItem("token");
     const data = await axios.get(
@@ -109,12 +127,16 @@ const Navbar = () => {
               </li>
 
               <li>
-                <button
-                  onClick={activatePremiumButton}
-                  className="block py-2 pl-3 pr-4 text-red-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
-                >
-                  Activate Premium
-                </button>
+                {ispremiumuser ? (
+                  <> Premium User</>
+                ) : (
+                  <button
+                    onClick={activatePremiumButton}
+                    className="block py-2 pl-3 pr-4 text-red-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                  >
+                    Activate Premium
+                  </button>
+                )}
               </li>
             </ul>
           </div>

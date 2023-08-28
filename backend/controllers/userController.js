@@ -2,8 +2,8 @@ const signupUserModel = require("../model/userSignup");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-function generateAccessToken(id,name) {
-  return jwt.sign({ signupuserId: id,name:name }, "98kirtikmarseqnjde132323123232kjcdbcf");
+function generateAccessToken(id,name,ispremiumuser) {
+  return jwt.sign({ signupuserId: id,name:name,ispremiumuser }, "98kirtikmarseqnjde132323123232kjcdbcf");
 }
 exports.signUpUser = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -32,7 +32,7 @@ exports.signInUser = async (req, res, next) => {
         }
 
         if (result === true) {
-          res.status(201).json({ success: true, message: "sign in success",token:generateAccessToken(data[0].id,data[0].name) });
+          res.status(201).json({ success: true, message: "sign in success",token:generateAccessToken(data[0].id,data[0].name,data[0].ispremiumuser) });
         } else {
           res
             .status(400)
