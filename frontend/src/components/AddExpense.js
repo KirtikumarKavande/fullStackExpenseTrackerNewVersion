@@ -32,7 +32,7 @@ const AddExpense = () => {
   return (
     <>
       <form
-        className=" flex flex-col w-96 m-auto space-y-3 p-3 border border-gray-400 shadow-lg bg-slate-300 mt-24 rounded-md "
+        className=" flex flex-col w-96 m-auto space-y-3 p-3 border border-gray-400 shadow-lg  mt-24 rounded-md font-semibold"
         onSubmit={handleAddexpenseSubmit}
       >
         <label>Title</label>

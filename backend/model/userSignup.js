@@ -20,6 +20,9 @@ const signupUserModel= sequelize.define("signupuser", {
   password:{
     type:Sequelize.STRING,
     allowNull:false
+  },
+  ispremiumuser:{
+    type:Sequelize.BOOLEAN
   }
 });
 module.exports=signupUserModel

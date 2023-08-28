@@ -1,7 +1,35 @@
 import React from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
+  const activatePremiumButton = async () => {
+    const token = localStorage.getItem("token");
+    const data = await axios.get(
+      "http://localhost:4000/premiummemberactivation",
+      {
+        headers: { Authorization: token },
+      }
+    );
+
+    var options = {
+      key: data.data.key_id,
+      order_id: data.data.order.id,
+      handler: async function (response) {
+        await axios.post(
+          "http://localhost:4000/updatetransactionstatus",
+          {
+            order_id: options.order_id,
+            payment_id: response.razorpay_payment_id,
+          },
+          { headers: { Authorization: token } }
+        );
+      },
+    };
+    var rzp1 = new window.Razorpay(options);
+    rzp1.open();
+  };
+
   return (
     <div>
       <nav className="bg-white dark:bg-gray-900 fixed w-full z-20 top-0 left-0 border-b border-gray-200 dark:border-gray-600">
@@ -78,6 +106,15 @@ const Navbar = () => {
                 >
                   Sign In
                 </Link>
+              </li>
+
+              <li>
+                <button
+                  onClick={activatePremiumButton}
+                  className="block py-2 pl-3 pr-4 text-red-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+                >
+                  Activate Premium
+                </button>
               </li>
             </ul>
           </div>

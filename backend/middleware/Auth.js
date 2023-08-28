@@ -3,11 +3,10 @@ const User = require("../model/userSignup");
 authenticate = (req, res, next) => {
   try {
     const token = req.header("Authorization");
+    console.log(">>>>>>>>>>>>>>>>>>>>.",token)
     const user = jwt.verify(token, "98kirtikmarseqnjde132323123232kjcdbcf");
     User.findByPk(user.signupuserId)
       .then((user) => {
-        console.log(">>>>>>>>>>>>>>>>>>", user);
-        console.log("strigified", JSON.stringify(user));
         req.user = user;
         next();
       })
