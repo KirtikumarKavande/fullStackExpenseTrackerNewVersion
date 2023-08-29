@@ -2,10 +2,12 @@ const signupUserModel = require("../model/userSignup");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-function generateAccessToken(id,name,ispremiumuser) {
+
+const generateAccessToken=(id,name,ispremiumuser)=>{
   return jwt.sign({ signupuserId: id,name:name,ispremiumuser }, "98kirtikmarseqnjde132323123232kjcdbcf");
+
 }
-exports.signUpUser = async (req, res, next) => {
+const signUpUser = async (req, res, next) => {
   const { name, email, password } = req.body;
 
   try {
@@ -18,7 +20,7 @@ exports.signUpUser = async (req, res, next) => {
   }
 };
 
-exports.signInUser = async (req, res, next) => {
+const signInUser = async (req, res, next) => {
   console.log("email", req.body.email);
   try {
     const data = await signupUserModel.findAll({
@@ -32,7 +34,17 @@ exports.signInUser = async (req, res, next) => {
         }
 
         if (result === true) {
-          res.status(201).json({ success: true, message: "sign in success",token:generateAccessToken(data[0].id,data[0].name,data[0].ispremiumuser) });
+          res
+            .status(201)
+            .json({
+              success: true,
+              message: "sign in success",
+              token: generateAccessToken(
+                data[0].id,
+                data[0].name,
+                data[0].ispremiumuser
+              ),
+            });
         } else {
           res
             .status(400)
@@ -48,3 +60,6 @@ exports.signInUser = async (req, res, next) => {
     res.status(500).json({ success: false, message: err });
   }
 };
+
+
+module.exports =  {generateAccessToken,signUpUser,signInUser} 

@@ -19,8 +19,8 @@ const Navbar = () => {
 
     return JSON.parse(jsonPayload);
   }
-  const ispremiumuser = parseJwt(token);
-
+  const jwtToken = parseJwt(token);
+  const haspremiumuser = jwtToken.ispremiumuser;
   const activatePremiumButton = async () => {
     const token = localStorage.getItem("token");
     const data = await axios.get(
@@ -34,7 +34,7 @@ const Navbar = () => {
       key: data.data.key_id,
       order_id: data.data.order.id,
       handler: async function (response) {
-        await axios.post(
+        const res = await axios.post(
           "http://localhost:4000/updatetransactionstatus",
           {
             order_id: options.order_id,
@@ -42,6 +42,7 @@ const Navbar = () => {
           },
           { headers: { Authorization: token } }
         );
+        localStorage.setItem("token", res.data.token);
       },
     };
     var rzp1 = new window.Razorpay(options);
@@ -101,14 +102,14 @@ const Navbar = () => {
                   Home
                 </Link>
               </li>
-              {/* <li>
+              <li>
                 <Link
-                  to="/addexpense"
+                  to="/leaderboard"
                   className="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                 >
-                  Add Expense
+                  Leaderboard
                 </Link>
-              </li> */}
+              </li>
               <li>
                 <Link
                   to="/signup"
@@ -127,14 +128,14 @@ const Navbar = () => {
               </li>
 
               <li>
-                {ispremiumuser ? (
-                  <> Premium User</>
+                {haspremiumuser ? (
+                  <p> Premium User</p>
                 ) : (
                   <button
                     onClick={activatePremiumButton}
                     className="block py-2 pl-3 pr-4 text-red-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 md:dark:hover:text-blue-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
                   >
-                    Activate Premium
+                    Activate Premium feature
                   </button>
                 )}
               </li>

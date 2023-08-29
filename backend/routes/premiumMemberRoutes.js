@@ -4,8 +4,20 @@ const purchasepremiumController = require("../controllers/premiumMemberControlle
 const router = express.Router();
 const auth = require("../middleware/Auth");
 
-router.get("/premiummemberactivation", auth.authenticate,purchasepremiumController.purchasepremium);
-router.post("/updatetransactionstatus", auth.authenticate,purchasepremiumController.updatetransactionstatus);
+router.get(
+  "/premiummemberactivation",
+  auth.authenticate,
+  purchasepremiumController.purchasepremium
+);
+router.post(
+  "/updatetransactionstatus",
+  auth.authenticate,
+  purchasepremiumController.updatetransactionstatus
+);
 
+router.get(
+  "/showleaderboard",
+  purchasepremiumController.showleaderboard
+);
 
 module.exports = router;
