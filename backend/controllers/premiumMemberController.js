@@ -2,8 +2,8 @@ const Razorpay = require("razorpay");
 const Order = require("../model/orders");
 const userController = require("./userController");
 const User = require("../model/userSignup");
-const EXpense = require("../model/expense");
 const Expense = require("../model/expense");
+const sequelize = require("../util/database");
 
 exports.purchasepremium = (req, res, next) => {
   try {
@@ -57,27 +57,22 @@ exports.updatetransactionstatus = async (req, res) => {
 };
 
 exports.showleaderboard = async (req, res, next) => {
-  const users = await User.findAll();
-  const expenses = await Expense.findAll();
-
-  const expensesData = {};
-  expenses.forEach((expense) => {
-    if (expensesData[expense.signupuserId]) {
-      expensesData[expense.signupuserId] =
-        +expensesData[expense.signupuserId] + +expense.amount;
-    } else {
-      expensesData[expense.signupuserId] = +expense.amount;
-    }
+  const users = await User.findAll({
+    attributes: [
+      "id",
+      "name",
+      "email",
+      [sequelize.fn("sum", sequelize.col("amount")), "total_amount"],
+    ],
+    include: [
+      {
+        model: Expense,
+        attributes: [],
+      },
+    ],
+    group: ["id"],
+    order: [["total_amount", "DESC"]],
   });
-  const updatedExpensesData = [];
-  users.forEach((res) => {
-    updatedExpensesData.push({
-      name: res.name,
-      email:res.email,
-      total_amount: expensesData[+res.id] || 0, //if user does not add expense take it as 0
-    });
-  });
-  updatedExpensesData.sort((a, b) => b.total_amount - a.total_amount);
 
-  res.status(200).json(updatedExpensesData);
+  res.status(200).json(users);
 };
