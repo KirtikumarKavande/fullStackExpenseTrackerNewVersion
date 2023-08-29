@@ -54,7 +54,7 @@ const Leaderboard = () => {
                           {item.email}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-200">
-                          {item.total_amount}
+                          {item.totalexpenses}
                         </td>
                       </tr>
                     );

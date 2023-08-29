@@ -23,6 +23,10 @@ const signupUserModel= sequelize.define("signupuser", {
   },
   ispremiumuser:{
     type:Sequelize.BOOLEAN
+  },
+  totalexpenses:{
+    type:Sequelize.INTEGER,
+    defaultValue:0
   }
 });
 module.exports=signupUserModel

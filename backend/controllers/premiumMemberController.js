@@ -58,20 +58,9 @@ exports.updatetransactionstatus = async (req, res) => {
 
 exports.showleaderboard = async (req, res, next) => {
   const users = await User.findAll({
-    attributes: [
-      "id",
-      "name",
-      "email",
-      [sequelize.fn("sum", sequelize.col("amount")), "total_amount"],
-    ],
-    include: [
-      {
-        model: Expense,
-        attributes: [],
-      },
-    ],
-    group: ["id"],
-    order: [["total_amount", "DESC"]],
+    attributes: ["id", "name", "email", "totalexpenses"],
+
+    order: [["totalexpenses", "DESC"]],
   });
 
   res.status(200).json(users);
