@@ -1,9 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import ForgetPassword from "../../src/utilites/model/Forgetpassword";
 
 const Signin = () => {
-  const navigate=useNavigate()
+  let [isOpen, setIsOpen] = useState(false);
+
+  const navigate = useNavigate();
   const emailRef = useRef();
   const passwordRef = useRef();
 
@@ -27,9 +30,8 @@ const Signin = () => {
       .then((data) => {
         if (data.success) {
           toast.success(data.message);
-          localStorage.setItem('token',data.token);
-          navigate('/addexpense')
-          
+          localStorage.setItem("token", data.token);
+          navigate("/addexpense");
         } else {
           toast.error(data.message);
         }
@@ -104,7 +106,7 @@ const Signin = () => {
                 >
                   Sign in
                 </button>
-                <p className="text-sm font-light text-gray-500 dark:text-gray-400">
+                <p className=" font-light text-gray-500 dark:text-gray-400">
                   Don’t have an account yet?{" "}
                   <Link
                     to="/signup"
@@ -114,6 +116,18 @@ const Signin = () => {
                   </Link>
                 </p>
               </form>
+              <ForgetPassword isOpen={isOpen} setIsOpen={setIsOpen} />
+
+              <p className="text-sm">
+                Forget Password ?{" "}
+                <button
+                  onClick={() => {
+                    setIsOpen(true);
+                  }}
+                >
+                  Click
+                </button>
+              </p>
             </div>
           </div>
         </div>
