@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 
 const Expense = ({ expenseData, setExpenseData }) => {
+  const buttonRef = useRef(null);
+
+  const [fileUrl, setUrl] = useState();
+  const token = localStorage.getItem("token");
+  console.log("url", fileUrl?.fileURL);
   useEffect(() => {
-    const token = localStorage.getItem("token");
     console.log(token);
 
     fetch("http://localhost:4000/show-expense", {
@@ -16,17 +21,26 @@ const Expense = ({ expenseData, setExpenseData }) => {
       });
   }, []);
   const handleDeleteExpeses = (id) => {
-    const token = localStorage.getItem("token");
-
     const updatedData = expenseData.filter((item) => {
       return item.id !== id;
     });
     setExpenseData(updatedData);
 
     fetch(`http://localhost:4000/delete-expense/${id}`, {
-      headers: { "Authorization": token },
+      headers: { Authorization: token },
     });
   };
+  const handleDownload = async () => {
+    const data = await fetch("http://localhost:4000/downloadexpenses", {
+      headers: { Authorization: token },
+    });
+
+    const res = await data.json();
+    setUrl(res);
+  };
+  useEffect(() => {
+    fileUrl && buttonRef.current.click();
+  }, [fileUrl]);
 
   return (
     <div>
@@ -81,6 +95,13 @@ const Expense = ({ expenseData, setExpenseData }) => {
           </div>
         </div>
       </div>
+      {fileUrl && <Link to={fileUrl?.fileURL} ref={buttonRef} />}
+      <button
+        className=" mx-[550px] my-2 p-2 bg-blue-700"
+        onClick={handleDownload}
+      >
+        Download
+      </button>
     </div>
   );
 };
