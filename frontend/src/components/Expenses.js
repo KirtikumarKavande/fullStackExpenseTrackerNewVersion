@@ -3,23 +3,27 @@ import { Link } from "react-router-dom";
 
 const Expense = ({ expenseData, setExpenseData }) => {
   const buttonRef = useRef(null);
+  const [currentPageNumber, setCurrentPageNumber] = useState(1);
 
   const [fileUrl, setUrl] = useState();
+  const [pagiationInfo, setPagiationInfo] = useState();
+  console.log("good", currentPageNumber);
   const token = localStorage.getItem("token");
   console.log("url", fileUrl?.fileURL);
   useEffect(() => {
     console.log(token);
 
-    fetch("http://localhost:4000/show-expense", {
+    fetch(`http://localhost:4000/show-expense?page=${currentPageNumber}`, {
       headers: { Authorization: token },
     })
       .then((data) => {
         return data.json();
       })
       .then((res) => {
-        setExpenseData(res);
+        setExpenseData(res.expense);
+        setPagiationInfo(res);
       });
-  }, []);
+  }, [currentPageNumber]);
   const handleDeleteExpeses = (id) => {
     const updatedData = expenseData.filter((item) => {
       return item.id !== id;
@@ -66,35 +70,71 @@ const Expense = ({ expenseData, setExpenseData }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {expenseData.map((item) => (
-                    <tr className="border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-700">
-                      <td className="whitespace-nowrap px-6 py-4 font-medium">
-                        {item.title}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4">
-                        {item.category}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4">
-                        {item.amount}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4 ">
-                        <button
-                          className="mr-8"
-                          onClick={() => {
-                            handleDeleteExpeses(item.id);
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {expenseData &&
+                    expenseData?.map((item) => (
+                      <tr className="border-b bg-neutral-100 dark:border-neutral-500 dark:bg-neutral-700">
+                        <td className="whitespace-nowrap px-6 py-4 font-medium">
+                          {item.title}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4">
+                          {item.category}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4">
+                          {item.amount}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4 ">
+                          <button
+                            className="mr-8"
+                            onClick={() => {
+                              handleDeleteExpeses(item.id);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
       </div>
+      <div className="flex   mx-[550px] cursor-pointer space-x-4">
+        {pagiationInfo?.hasPreviousPage && (
+          <button
+            onClick={() => {
+              setCurrentPageNumber(currentPageNumber - 1);
+            }}
+          >
+            {pagiationInfo?.currentPage - 1}
+          </button>
+        )}
+        <button className="font-bold">{pagiationInfo?.currentPage}</button>
+        {pagiationInfo?.hasNextPage && (
+          <button
+            onClick={() => {
+              setCurrentPageNumber(pagiationInfo.nextPage);
+            }}
+          >
+            {pagiationInfo?.nextPage}
+          </button>
+        )}
+        {currentPageNumber !== pagiationInfo?.lastPage &&
+          currentPageNumber + 1 !== pagiationInfo?.lastPage && (
+            <div>
+              ......
+              <button
+                onClick={() => {
+                  setCurrentPageNumber(pagiationInfo.lastPage);
+                }}
+              >
+                {pagiationInfo?.lastPage}
+              </button>
+            </div>
+          )}
+      </div>
+
       {fileUrl && <Link to={fileUrl?.fileURL} ref={buttonRef} />}
       <button
         className=" mx-[550px] my-2 p-2 bg-blue-700"

@@ -65,9 +65,35 @@ exports.addexpense = async (req, res) => {
   }
 };
 exports.getexpense = async (req, res) => {
-  req.user.getExpenses().then((expense) => {
-    res.status(201).json(expense);
-  });
+  const page = +req.query.page || 1;
+  let Items_PER_PAGE = 2;
+  let totalItems;
+  Expense.count()
+    .then((count) => {
+      console.log("count", count);
+      totalItems = count;
+      return Expense.findAll({
+        offset: (page - 1) * Items_PER_PAGE,
+        limit: Items_PER_PAGE,
+      });
+    })
+    .then((expense) => {
+      console.log("sorted data", expense);
+      res.status(201).json({
+        expense:expense,
+        currentPage:page,
+        hasNextPage:Items_PER_PAGE*page<totalItems,
+        nextPage:page+1,
+        hasPreviousPage:page>1,
+        lastPage:Math.ceil(totalItems/Items_PER_PAGE)
+
+
+      });
+    });
+
+//   req.user.getExpenses().then((expense) => {
+//     res.status(201).json(expense);
+//   });
 };
 
 exports.deleteExpense = (req, res, next) => {
