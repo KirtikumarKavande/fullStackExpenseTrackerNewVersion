@@ -66,7 +66,10 @@ exports.addexpense = async (req, res) => {
 };
 exports.getexpense = async (req, res) => {
   const page = +req.query.page || 1;
-  let Items_PER_PAGE = 2;
+
+  let Items_PER_PAGE = +req.query.choosepagesize;
+
+  console.log("getting data>>>>>>>>>>",Items_PER_PAGE)
   let totalItems;
   Expense.count()
     .then((count) => {
@@ -80,20 +83,18 @@ exports.getexpense = async (req, res) => {
     .then((expense) => {
       console.log("sorted data", expense);
       res.status(201).json({
-        expense:expense,
-        currentPage:page,
-        hasNextPage:Items_PER_PAGE*page<totalItems,
-        nextPage:page+1,
-        hasPreviousPage:page>1,
-        lastPage:Math.ceil(totalItems/Items_PER_PAGE)
-
-
+        expense: expense,
+        currentPage: page,
+        hasNextPage: Items_PER_PAGE * page < totalItems,
+        nextPage: page + 1,
+        hasPreviousPage: page > 1,
+        lastPage: Math.ceil(totalItems / Items_PER_PAGE),
       });
     });
 
-//   req.user.getExpenses().then((expense) => {
-//     res.status(201).json(expense);
-//   });
+  //   req.user.getExpenses().then((expense) => {
+  //     res.status(201).json(expense);
+  //   });
 };
 
 exports.deleteExpense = (req, res, next) => {

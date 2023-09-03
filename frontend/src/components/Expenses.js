@@ -2,8 +2,12 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const Expense = ({ expenseData, setExpenseData }) => {
+  const expensesPerPage=localStorage.getItem('expensesPerPage')
+
   const buttonRef = useRef(null);
   const [currentPageNumber, setCurrentPageNumber] = useState(1);
+  const [chooseExpensesPerPage, setchooseExpensesPerPage] = useState(expensesPerPage);
+  localStorage.setItem("expensesPerPage",chooseExpensesPerPage)
 
   const [fileUrl, setUrl] = useState();
   const [pagiationInfo, setPagiationInfo] = useState();
@@ -13,9 +17,12 @@ const Expense = ({ expenseData, setExpenseData }) => {
   useEffect(() => {
     console.log(token);
 
-    fetch(`http://localhost:4000/show-expense?page=${currentPageNumber}`, {
-      headers: { Authorization: token },
-    })
+    fetch(
+      `http://localhost:4000/show-expense?page=${currentPageNumber}&choosepagesize=${chooseExpensesPerPage||2}`,
+      {
+        headers: { Authorization: token },
+      }
+    )
       .then((data) => {
         return data.json();
       })
@@ -23,7 +30,7 @@ const Expense = ({ expenseData, setExpenseData }) => {
         setExpenseData(res.expense);
         setPagiationInfo(res);
       });
-  }, [currentPageNumber]);
+  }, [currentPageNumber, chooseExpensesPerPage]);
   const handleDeleteExpeses = (id) => {
     const updatedData = expenseData.filter((item) => {
       return item.id !== id;
@@ -98,6 +105,22 @@ const Expense = ({ expenseData, setExpenseData }) => {
               </table>
             </div>
           </div>
+        </div>
+      </div>
+      <div>
+        <div className="flex justify-center items-center">
+          <span className="mx-2">Number of Expenses per page</span>
+          <select
+            className="border border-gray-400"
+            onChange={(e) => {
+              setchooseExpensesPerPage(e.target.value);
+            }}
+          >
+            <option>2</option>
+
+            <option>3</option>
+            <option>4</option>
+          </select>
         </div>
       </div>
       <div className="flex   mx-[550px] cursor-pointer space-x-4">
