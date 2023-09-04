@@ -4,12 +4,15 @@ const userController = require("./userController");
 const User = require("../model/userSignup");
 const Expense = require("../model/expense");
 const sequelize = require("../util/database");
+require("dotenv").config();
+
 
 exports.purchasepremium = (req, res, next) => {
+  
   try {
     var rzp = new Razorpay({
-      key_id: "rzp_test_LbuGhJwSwmqPeJ",
-      key_secret: "OqvYJgksErPAsLNDIYxod2Wx",
+      key_id: "=====",
+      key_secret: "===",
     });
     const amount = 2500;
     rzp.orders.create({ amount, currency: "INR" }, (err, order) => {

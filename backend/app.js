@@ -9,9 +9,27 @@ const expense = require("./model/expense");
 const purchesRoutes = require("./routes/premiumMemberRoutes");
 const forgetPasswordRoute = require("./routes/forgetpassword");
 const Order = require("./model/orders");
+const helmet = require("helmet");
+const compression = require("compression");
+const morgan=require("morgan");
+const fs =require('fs');
+const path = require("path");
+require("dotenv").config();
+
+
 
 const app = express();
+
 app.use(cors());
+app.use(helmet());
+app.use(compression());
+
+const accessLogStream=fs.createWriteStream(path.join(__dirname,'access.log'),{
+  flags:'a'
+})
+app.use(morgan('combined',{stream:accessLogStream}))
+
+
 
 app.use(bodyParser.json({ extended: false }));
 
@@ -29,9 +47,9 @@ Order.belongsTo(user);
 
 sequelize
   .sync()
-  
+
   .then(() => {
-    app.listen(4000);
+    app.listen(process.env.PORT||4000);
   })
   .catch((err) => {
     console.log(err);
